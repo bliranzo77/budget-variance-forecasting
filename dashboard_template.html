@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>2026 Budget Outlook</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;800&display=swap">
+  <!-- Page styles: dashboard.css must sit in the same folder as this file -->
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1 id="headline"></h1>
+      <p id="subhead"></p>
+    </header>
+
+    <div class="legend">
+      <span><i class="key spent"></i>Spent January to September</span>
+      <span><i class="key forecast"></i>Forecast October to December</span>
+      <span><i class="key budget"></i>Budget</span>
+    </div>
+
+    <div id="rows"></div>
+
+    <p>Forecast made with linear regression from actuals through September 2026. Synthetic data for a portfolio project.</p>
+  </main>
+
+  <script>
+    // The notebook fills in the forecast table here
+    const data = FORECAST_DATA;
+
+    const thousands = v => "$" + Math.round(Math.abs(v) / 1000).toLocaleString() + "K";
+    const millions = v => "$" + (v / 1e6).toFixed(2) + "M";
+    const total = key => data.reduce((sum, d) => sum + d[key], 0);
+
+    // Headline and summary
+    const variance = total("year_end") - total("budget");
+    document.getElementById("headline").textContent =
+      `We'll finish 2026 about ${thousands(variance)} ${variance > 0 ? "over" : "under"} budget.`;
+    document.getElementById("subhead").textContent =
+      `Spent ${millions(total("jan_sep"))} of the ${millions(total("budget"))} budget through September. ` +
+      `Forecast for the full year: ${millions(total("year_end"))}.`;
+
+    // One row per department, biggest overspend first.
+    // Bar widths are % of 130% of budget, matching the budget line position in dashboard.css.
+    data.sort((a, b) => b.variance - a.variance);
+    document.getElementById("rows").innerHTML = data.map(d => {
+      const spent = Math.min(d.jan_sep / d.budget / 1.3 * 100, 100);
+      const rest = Math.min((d.year_end - d.jan_sep) / d.budget / 1.3 * 100, 100 - spent);
+      const color = d.status === "Over budget" ? "over" : d.status === "Under budget" ? "under" : "";
+      const label = d.status === "On track" ? "On track" : `${thousands(d.variance)} ${d.variance > 0 ? "over" : "under"}`;
+      const sign = d["variance_%"] > 0 ? "+" : "";
+      return `
+        <div class="row">
+          <span class="name">${d.department}</span>
+          <span class="amount ${color}">${label}</span>
+          <div class="track">
+            <i class="spent" style="width: ${spent}%"></i>
+            <i class="forecast" style="width: ${rest}%"></i>
+            <span class="budget-line"></span>
+          </div>
+          <span class="detail">Budget ${thousands(d.budget)}, forecast ${thousands(d.year_end)} (${sign}${d["variance_%"]}%)</span>
+        </div>`;
+    }).join("");
+  </script>
+</body>
+</html>

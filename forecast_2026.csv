@@ -1,0 +1,6 @@
+department,budget,jan_sep,year_end,variance,variance_%,status
+Engineering,6948000,5254015,7038898,90898,1.3,On track
+Marketing,2088000,1927556,2582847,494847,23.7,Over budget
+Operations,1392000,1035106,1387341,-4659,-0.3,On track
+Sales,2784000,2319737,3108204,324204,11.6,Over budget
+Support,1668000,1051655,1409510,-258490,-15.5,Under budget

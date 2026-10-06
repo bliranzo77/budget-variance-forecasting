@@ -1,0 +1,141 @@
+/* Styles for dashboard.html (and dashboard_template.html) */
+
+/* ---------- Colors ---------- */
+:root {
+  --paper: #f3f5f1;      /* page background */
+  --ink: #1d2420;        /* main text and budget line */
+  --muted: #5d6862;      /* secondary text */
+  --line: #d5dbd4;       /* row dividers */
+  --spent: #3f6b5c;      /* spent Jan-Sep */
+  --forecast: #a9c6b9;   /* forecast Oct-Dec */
+  --over: #b3362b;       /* over budget */
+  --under: #2f6fb0;      /* under budget */
+}
+
+/* Dark mode: follows the computer's setting... */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #161b18;
+    --ink: #e9eee9;
+    --muted: #9eaaa3;
+    --line: #2e3631;
+    --spent: #6fa591;
+    --forecast: #3a5a4d;
+    --over: #ec7166;
+    --under: #6ea6e6;
+    color-scheme: dark;
+  }
+}
+
+/* ...or a page that sets data-theme="dark" */
+:root[data-theme="dark"] {
+  --paper: #161b18;
+  --ink: #e9eee9;
+  --muted: #9eaaa3;
+  --line: #2e3631;
+  --spent: #6fa591;
+  --forecast: #3a5a4d;
+  --over: #ec7166;
+  --under: #6ea6e6;
+  color-scheme: dark;
+}
+
+/* ---------- Page ---------- */
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+main {
+  display: grid;
+  gap: 32px;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 48px 20px;
+}
+
+h1 {
+  margin: 0 0 12px;
+  font-size: clamp(30px, 6vw, 46px);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+p {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* ---------- Legend ---------- */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.key {
+  width: 14px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+/* ---------- Department rows ---------- */
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 16px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+}
+
+.name,
+.amount {
+  font-weight: 600;
+}
+
+.detail {
+  grid-column: 1 / -1;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.amount,
+.detail {
+  font-variant-numeric: tabular-nums;
+}
+
+/* The bar runs from 0 to 130% of budget, so the budget line sits at 100 / 130 = 76.92% */
+.track {
+  grid-column: 1 / -1;
+  position: relative;
+  display: flex;
+  height: 14px;
+}
+
+.budget-line {
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  left: 76.92%;
+  width: 2px;
+  background: var(--ink);
+}
+
+/* ---------- Colors used by the bars, legend and labels ---------- */
+.spent    { background: var(--spent); }
+.forecast { background: var(--forecast); }
+.budget   { width: 2px; height: 14px; background: var(--ink); }
+.over     { color: var(--over); }
+.under    { color: var(--under); }
